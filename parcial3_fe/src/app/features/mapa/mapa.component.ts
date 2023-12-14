@@ -50,7 +50,7 @@ export class MapaComponent implements OnInit{
 
     //L.circleMarker([location.latitude, location.longitude]).addTo(this.map).openPopup();
 
-    //CON ESTO SE PUEDEN HACER LINEAS (es un poligono con 2 vertices)
+    //CON ESTO SE PUEDEN HACER LINEAS (es un polígono con 2 vertices)
     L.polygon([
       [this.marker1.latitude, this.marker1.longitude],
       [this.marker2.latitude, this.marker2.longitude]

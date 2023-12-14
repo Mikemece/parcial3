@@ -109,7 +109,7 @@ def prueba(request, idp):
         
 
 
-# ---------------- IMAGENES ----------------------
+# ---------------- IMÁGENES ----------------------
         
 @api_view(['POST'])
 def upload_image(request):
