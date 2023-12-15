@@ -1,4 +1,4 @@
-import { SocialAuthService, SocialUser } from '@abacritt/angularx-social-login';
+import { GoogleSigninButtonModule, SocialAuthService, SocialUser } from '@abacritt/angularx-social-login';
 import { CommonModule } from '@angular/common';
 import { AfterViewInit, Component } from '@angular/core';
 import { Router } from '@angular/router';
@@ -7,7 +7,7 @@ import { OauthService } from '../../../../../parcial3_fe/src/app/services/oauth-
 @Component({
   selector: 'app-oauth',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, GoogleSigninButtonModule],
   templateUrl: './oauth.component.html',
   styleUrl: './oauth.component.css',
   providers: [OauthService]
@@ -21,7 +21,6 @@ export class OauthComponent{
   ngOnInit() {
     
     this.authService.authState.subscribe((user) => {
-      console.log("AAAAAAA")
       this.user = user;
       this.loggedIn = (user != null);
       if (user && user.idToken) {
@@ -36,5 +35,8 @@ export class OauthComponent{
     localStorage.removeItem("email");
     localStorage.removeItem("name");
     localStorage.removeItem("photoUrl");
+  }
+  handleAuth(): void{
+    console.log("test");
   }
 }

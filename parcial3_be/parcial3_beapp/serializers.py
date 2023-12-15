@@ -10,3 +10,6 @@ class PruebaSerializer(serializers.Serializer):
     boolean = serializers.BooleanField()
     inte = serializers.IntegerField()
     objid = serializers.CharField(max_length = 24, required=False)
+
+class TokenSerializer(serializers.Serializer):
+    idtoken = serializers.CharField()

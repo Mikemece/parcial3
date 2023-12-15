@@ -1,8 +1,11 @@
 from django.http import HttpResponse
-from parcial3_beapp.serializers import PruebaSerializer
+from parcial3_beapp.serializers import PruebaSerializer, TokenSerializer
 import pymongo
 import requests
 import json
+
+from google.oauth2 import id_token
+from google.auth.transport import requests
 
 import cloudinary
 import cloudinary.uploader
@@ -54,11 +57,6 @@ def pruebas(request):
         serializer = PruebaSerializer(data=request.data)
         if serializer.is_valid():
             prueba = serializer.validated_data
-            #Probablemente esto se use para el oauth
-            # existing_user = collection_prueba.find_one({'_id': prueba['_id']})
-            # if existing_user is not None:
-            #     return Response({"error": "Ya existe un usuario con ese correo."},
-            #                     status=status.HTTP_400_BAD_REQUEST)
             prueba['_id'] = ObjectId()
             prueba['date'] = datetime.now()
             prueba['array'] = []
@@ -132,3 +130,29 @@ def upload_image(request):
             uploaded_urls.append(upload_result['secure_url'])
         return JsonResponse({'urls': uploaded_urls})
     return HttpResponse(status=400)
+
+
+# ---------------- TOKEN OAUTH ----------------------
+
+CLIENT_ID = '97897189905-91u0q02ni37ctgtgege5uidl9cefa6gt.apps.googleusercontent.com'
+
+@api_view(['POST'])
+def oauth(request):
+    if request.method == 'POST':
+        serializer = TokenSerializer(data=request.data)
+        if serializer.is_valid():
+            tokenData = serializer.validated_data
+            try:
+                token = tokenData['idtoken']
+                idinfo = id_token.verify_oauth2_token(token, requests.Request(), CLIENT_ID)
+                userid = idinfo['sub']
+                if userid:
+                    return Response({"userid": userid,},
+                                    status=status.HTTP_200_OK)
+            except ValueError:
+                # Invalid token
+                
+                return Response({"error": "Token no valido: "+token,},
+                                    status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

@@ -6,7 +6,7 @@ import { MapaComponent } from './features/mapa/mapa.component';
 export const routes: Routes = [
 
     {
-        path: 'inicio',
+        path: '',
         component: InicioComponent,
         title: 'Inicio'
     },
