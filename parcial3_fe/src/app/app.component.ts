@@ -3,11 +3,12 @@ import { CommonModule } from '@angular/common';
 import { RouterOutlet } from '@angular/router';
 import { OauthComponent } from './features/oauth/oauth.component';
 import { HttpClientModule } from '@angular/common/http';
+import { NavbarComponent } from './features/navbar/navbar.component';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, RouterOutlet, OauthComponent, HttpClientModule],
+  imports: [CommonModule,NavbarComponent, RouterOutlet, OauthComponent, HttpClientModule],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })

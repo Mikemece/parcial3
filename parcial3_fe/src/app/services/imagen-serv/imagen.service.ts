@@ -16,5 +16,6 @@ export class ImagenService {
       formData.append('images', files[i]);
     }
     return this.http.post<any>('http://localhost:8000/api/image/upload', formData);
+    //return this.http.post<any>('http://direccionAWS:8000/api/image/upload', formData);
   }
 }
