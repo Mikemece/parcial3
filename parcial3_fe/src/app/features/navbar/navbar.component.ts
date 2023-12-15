@@ -28,11 +28,11 @@ export class NavbarComponent{
   }
 
   redirigirSubirImagen(): void{
-    this.router.navigate(['/upload']);
+    this.router.navigate(['/imagenes']);
   }
 
   redirigirMapa(): void{
-    this.router.navigate(['/map'])
+    this.router.navigate(['/mapa'])
   }
 
 }

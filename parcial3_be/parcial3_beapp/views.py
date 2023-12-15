@@ -1,5 +1,5 @@
 from django.http import HttpResponse
-from parcial3_beapp.serializers import PruebaSerializer, TokenSerializer
+from parcial3_beapp.serializers import EventoSerializer, TokenSerializer
 import pymongo
 import requests
 import json
@@ -33,78 +33,86 @@ my_client = pymongo.MongoClient('mongodb+srv://parcial:parcial@1parcial23.zzs3ao
 dbname = my_client['parcial3']
 
 # Colecciones
-collection_prueba = dbname["Prueba"]
+collection_evento = dbname["evento"]
 
 # ---------------- EL CRUD DE LAS TABLAS ---------------------- 
 
 @api_view(['GET', 'POST'])
-def pruebas(request):
+def eventos(request):
     if request.method == 'GET':
-        prueba = list(collection_prueba.find({}))        
-        for p in prueba:
+        evento = list(collection_evento.find({}))        
+        for p in evento:
             p['_id'] = str(ObjectId(p.get('_id',[])))
-            p['objid'] = str(ObjectId(p.get('objid',[])))
 
-        prueba_serializer = PruebaSerializer(data=prueba, many= True)
-        if prueba_serializer.is_valid():
-            json_data = prueba_serializer.data
+        evento_serializer = EventoSerializer(data=evento, many= True)
+        if evento_serializer.is_valid():
+            json_data = evento_serializer.data
             return Response(json_data, status=status.HTTP_200_OK)
         else:
-            return Response(prueba_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            return Response(evento_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
 
     elif request.method == 'POST':
-        serializer = PruebaSerializer(data=request.data)
+        serializer = EventoSerializer(data=request.data)
         if serializer.is_valid():
-            prueba = serializer.validated_data
-            prueba['_id'] = ObjectId()
-            prueba['date'] = datetime.now()
-            prueba['array'] = []
-            prueba['objid'] = ObjectId(prueba['objid'])
-            result = collection_prueba.insert_one(prueba)
+            evento = serializer.validated_data
+            evento['_id'] = ObjectId()
+            result = collection_evento.insert_one(evento)
             if result.acknowledged:
-                return Response({"message": "Producto creado con éxito."}, status=status.HTTP_201_CREATED)
+                return Response({"message": "Evento creado con éxito."}, status=status.HTTP_201_CREATED)
             else:
-                return Response({"error": "Algo salió mal. Producto no creado."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+                return Response({"error": "Algo salió mal. Evento no creado."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['GET','PUT', 'DELETE'])
-def prueba(request, idp):
+def evento(request, idp):
     if request.method == 'PUT':
-        serializer = PruebaSerializer(data=request.data)
+        serializer = EventoSerializer(data=request.data)
         if serializer.is_valid():
-            prueba = serializer.validated_data
-            prueba['_id'] = ObjectId(idp)
-            result = collection_prueba.replace_one({'_id': ObjectId(idp)}, prueba)
+            evento = serializer.validated_data
+            evento['_id'] = ObjectId(idp)
+            result = collection_evento.replace_one({'_id': ObjectId(idp)}, evento)
             if result.acknowledged:
-                return Response({"message": "Usuario actualizado con éxito",},
+                return Response({"message": "Evento actualizado con éxito",},
                                 status=status.HTTP_200_OK)
             else:
-                return Response({"error": "Algo salió mal. Usuario no actualizado."},
+                return Response({"error": "Algo salió mal. Evento no actualizado."},
                                 status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
 
     elif request.method == 'GET':
-            p = collection_prueba.find_one({'_id': ObjectId(idp)})
+            p = collection_evento.find_one({'_id': ObjectId(idp)})
             p['_id'] = str(ObjectId(p.get('_id', [])))
-            p['objid'] = str(ObjectId(p.get('objid', [])))
 
-            serializer = PruebaSerializer(data=p)
+            serializer = EventoSerializer(data=p)
             if serializer.is_valid():
                 return Response(serializer.data, status=status.HTTP_200_OK)
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
 
     elif request.method == 'DELETE' :
-        delete_data = collection_prueba.delete_one({'_id': ObjectId(idp)})
+        delete_data = collection_evento.delete_one({'_id': ObjectId(idp)})
         if delete_data.deleted_count == 1:
-            return Response({"mensaje": "Usuario eliminado con éxito"}, status=status.HTTP_200_OK)
+            return Response({"mensaje": "Evento eliminado con éxito"}, status=status.HTTP_200_OK)
         else:
-            return Response({"ERROR": "Usuario no encontrado"}, status=status.HTTP_404_NOT_FOUND)
+            return Response({"ERROR": "Evento no encontrado"}, status=status.HTTP_404_NOT_FOUND)
         
+@api_view(['GET'])
+def eventoPostal(request, postal):
+    if request.method =='GET':
+        evento = collection_evento.find_one({'lugar':postal })        
+        evento['_id'] = str(ObjectId(evento.get('_id',[])))
+
+        evento_serializer = EventoSerializer(data=evento)
+        if evento_serializer.is_valid():
+            json_data = evento_serializer.data
+            return Response(json_data, status=status.HTTP_200_OK)
+        else:
+            return Response(evento_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 
 # ---------------- IMÁGENES ----------------------

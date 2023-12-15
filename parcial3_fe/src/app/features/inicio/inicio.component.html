@@ -1,3 +1,13 @@
-<div *ngFor="let p of prueba; let i = index">
-    <h1>{{p.string}}</h1>
+
+<h1>Busca eventos por dirección postal:</h1><br>
+<form #formBusca="ngForm" (ngSubmit)="busca(formBusca.value)" class="d-flex mx-auto" id="busqueda" role="search" >
+    <input name="b" ngModel class="form-control me-2" type="search" aria-label="Search" >
+    <button class="btn" type="submit">Buscar</button>
+</form>
+
+<div *ngFor="let p of eventosC; let i = index">
+    <h3>{{p.nombre}},   Organizado por: {{p.organizador}}</h3>
+    <button class="btn btn-primary" (click)="redEvento(p._id)">Detalles</button><br>
 </div>
+
+<button class="btn btn-primary">Crear nuevo evento</button><br>

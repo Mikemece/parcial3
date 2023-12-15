@@ -3,8 +3,9 @@ from parcial3_beapp import views
 
 urlpatterns = [
 
-    path('api/pruebas/<str:idp>/', views.prueba),
-    path('api/pruebas/', views.pruebas),
+    path('api/eventos/<str:idp>/', views.evento),
+    path('api/eventos/', views.eventos),
+    path('api/eventoPostal/<str:postal>/', views.eventoPostal),
     path('api/image/upload', views.upload_image),
     path('logged', views.oauth)
 
